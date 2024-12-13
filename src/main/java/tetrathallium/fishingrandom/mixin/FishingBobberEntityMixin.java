@@ -13,7 +13,9 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+import tetrathallium.fishingrandom.GamblingEnchantment;
 import net.minecraft.registry.Registries;
+import net.minecraft.text.Text;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,11 +28,25 @@ public class FishingBobberEntityMixin {
     @Inject(method = "use", at = @At("HEAD"))
     private void onUse(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> ci) {
         ItemStack rod = user.getStackInHand(hand);
-        randomFishingFunction(user, rod);
+        handleFishingGambling(world, user, rod);
     }
 
-    private static void randomFishingFunction(PlayerEntity player, ItemStack rod) {
-        giveRandomItem(player);
+    private static void handleFishingGambling(World world, PlayerEntity player, ItemStack rod) {
+		boolean isGamblingTime = false;
+        for (FishingBobberEntity fishingBobber : world.getEntitiesByClass(FishingBobberEntity.class, player.getBoundingBox().expand(32), bobber -> true)) {
+            boolean caughtFishBool = ((FishingBobberEntityAccessor) fishingBobber).getCaughtFish();
+            if (!caughtFishBool) {continue;}
+			isGamblingTime = true;
+			break;
+        }
+        if (!isGamblingTime) {return;}
+
+		// Gambling time !
+        if (!GamblingEnchantment.SuccessGambling(rod)) {return;}
+
+		// Success
+		player.sendMessage(Text.of("You got a random item !"), true);
+		giveRandomItem(player);
     }
 
     private static void giveRandomItem(PlayerEntity player)
