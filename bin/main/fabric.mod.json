@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "fishingrandom",
+	"version": "${version}",
+	"name": "FishingRandom",
+	"description": "Fishing gives random items.",
+	"authors": [
+		"Tetrathallium"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/fishingrandom/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"tetrathallium.fishingrandom.FishingRandom"
+		],
+		"client": [
+			"tetrathallium.fishingrandom.FishingRandomClient"
+		]
+	},
+	"mixins": [
+		"fishingrandom.mixins.json",
+		{
+			"config": "fishingrandom.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.16.9",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

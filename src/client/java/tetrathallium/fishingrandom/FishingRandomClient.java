@@ -1,11 +1,19 @@
 package tetrathallium.fishingrandom;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.minecraft.enchantment.Enchantment;
+
+import net.minecraft.util.Identifier;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.Registries;
+
 
 public class FishingRandomClient implements ClientModInitializer {
+
+	public static final Enchantment GAMBLING = new GamblingEnchantment();
+
 	@Override
 	public void onInitializeClient() {
-		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
-		FishingEventHandler.registerFishingEvent();
+		Registry.register(Registries.ENCHANTMENT, new Identifier("fishingrandom", "gambling"), GAMBLING);
 	}
 }
