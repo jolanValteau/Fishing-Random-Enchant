@@ -3,8 +3,6 @@
 	"package": "tetrathallium.fishingrandom.mixin.client",
 	"compatibilityLevel": "JAVA_17",
 	"client": [
-		"FishingBobberEntityAccessor",
-		"FishingBobberEntityMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

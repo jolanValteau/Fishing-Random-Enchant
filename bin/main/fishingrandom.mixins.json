@@ -3,7 +3,8 @@
 	"package": "tetrathallium.fishingrandom.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"ExampleMixin"
+		"FishingBobberEntityAccessor",
+		"FishingBobberEntityMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
