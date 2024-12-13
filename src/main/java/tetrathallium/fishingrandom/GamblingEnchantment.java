@@ -8,6 +8,8 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.text.Text;
+import net.minecraft.entity.player.PlayerEntity;
 
 public class GamblingEnchantment extends Enchantment {
     public GamblingEnchantment() {
@@ -33,14 +35,20 @@ public class GamblingEnchantment extends Enchantment {
         return stack.getItem() == Items.FISHING_ROD;
     }
 
-    public static boolean SuccessGambling(ItemStack rod) {
+    public static boolean SuccessGambling(ItemStack rod, PlayerEntity debugPlayer) {
         boolean isSuccess = false;
         Random random = new Random();
 
         int chance = random.nextInt(100);
         int level = getLevel(rod);
 
-        isSuccess = chance > getMinLevelSuccessRate(level);
+        int minLevelSuccessRate = getMinLevelSuccessRate(level);
+
+        isSuccess = chance < minLevelSuccessRate;
+
+        if (debugPlayer != null) {
+            debugPlayer.sendMessage(Text.literal("Gambling " + level + " - Chance: " + chance + "/100 > " + minLevelSuccessRate + " ? => " + isSuccess), true);
+        }
 
         return isSuccess;
     }

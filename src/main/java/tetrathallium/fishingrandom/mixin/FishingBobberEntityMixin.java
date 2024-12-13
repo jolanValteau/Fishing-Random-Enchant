@@ -42,10 +42,10 @@ public class FishingBobberEntityMixin {
         if (!isGamblingTime) {return;}
 
 		// Gambling time !
-        if (!GamblingEnchantment.SuccessGambling(rod)) {return;}
+        if (!GamblingEnchantment.SuccessGambling(rod, player)) {return;}
 
 		// Success
-		player.sendMessage(Text.of("You got a random item !"), true);
+		// player.sendMessage(Text.of("You got a random item !"), true); // Todo uncomment
 		giveRandomItem(player);
     }
 
