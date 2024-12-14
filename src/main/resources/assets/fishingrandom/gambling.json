@@ -1,7 +1,6 @@
 {
-    "type": "fishingrandom:gambling",
-    "rarity": "very_rare",
-    "min_level": 1,
-    "max_level": 10
-  }
-  
+	"type": "fishingrandom:gambling",
+	"rarity": "very_rare",
+	"min_level": 1,
+	"max_level": 10
+}
