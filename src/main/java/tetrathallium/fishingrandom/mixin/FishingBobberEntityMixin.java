@@ -6,11 +6,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.Item;
 
+import java.rmi.UnexpectedException;
 import java.util.List;
 
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.math.random.Random;
+import java.util.Random;
 import net.minecraft.world.World;
 import tetrathallium.fishingrandom.GamblingEnchantment;
 import net.minecraft.registry.Registries;
@@ -23,44 +24,49 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(FishingRodItem.class)
 public class FishingBobberEntityMixin {
+	private static final Random random = new Random();
 	
 	@Inject(method = "use", at = @At("HEAD"))
 	private void onUse(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> ci) {
-		ItemStack rod = user.getStackInHand(hand);
-		handleFishingGambling(world, user, rod);
+		if (isPullingFish(world, user)) {handleFishingGambling(user, hand);}
 	}
 
-	private static void handleFishingGambling(World world, PlayerEntity player, ItemStack rod) {
-		boolean isGamblingTime = false;
+	private static boolean isPullingFish(World world, PlayerEntity player) {
 		for (FishingBobberEntity fishingBobber : world.getEntitiesByClass(FishingBobberEntity.class, player.getBoundingBox().expand(32), bobber -> true)) {
-			boolean caughtFishBool = ((FishingBobberEntityAccessor) fishingBobber).getCaughtFish();
-			if (caughtFishBool)
-			{
-				isGamblingTime = true;
-				break;
-			}
+			if (((FishingBobberEntityAccessor) fishingBobber).getCaughtFish()) {return true;}
 		}
-		if (!isGamblingTime) {return;}
+		return false;
+	}
+	
+	private static void handleFishingGambling(PlayerEntity player, Hand hand) {
+		ItemStack rod = player.getStackInHand(hand);
+		if (!GamblingEnchantment.isGambler(rod)) {return;} // Unenchanted fishing_rod // TODO MOVE
 
 		// Gambling time !
-		if (!GamblingEnchantment.successGambling(rod, player)) {return;}
+		if (!GamblingEnchantment.successGambling(rod, player)) {return;} // FAIL Gambling
 
 		// Success
 		player.sendMessage(Text.of("You have fished a random item !"), true);
-		giveRandomItem(player);
+		successfullyGambled((FishingRodItem) rod.getItem(), player);
 	}
 
-	private static void giveRandomItem(PlayerEntity player)
+	private static void successfullyGambled(FishingRodItem rod, PlayerEntity player)
+	{
+		giveRandomitem(player);
+		upgradeEnchant(rod);
+	}
+
+	private static void giveRandomitem(PlayerEntity player)
 	{
 		List<Item> allItems = Registries.ITEM.stream().toList();
 		if (allItems.isEmpty())
 		{return;}
 
-		Random random = Random.create();
-		Item randomItem = allItems.get(random.nextInt(allItems.size()));
+		player.giveItemStack(new ItemStack(allItems.get(random.nextInt(allItems.size()))));
+	}
 
-		ItemStack randomStack = new ItemStack(randomItem);
-
-		player.giveItemStack(randomStack);
+	private static void upgradeEnchant(FishingRodItem rod)
+	{
+		// TODO
 	}
 }

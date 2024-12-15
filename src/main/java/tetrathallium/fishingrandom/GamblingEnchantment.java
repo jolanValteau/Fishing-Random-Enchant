@@ -28,6 +28,11 @@ public class GamblingEnchantment extends Enchantment {
 		return 10;
 	}
 
+	public static boolean isGambler(ItemStack stack)
+	{
+		return getLevel(stack) != 0;
+	}
+
 	private static int getLevel(ItemStack stack) {
 		return EnchantmentHelper.getLevel(FishingRandom.GAMBLING, stack);
 	}
@@ -72,5 +77,23 @@ public class GamblingEnchantment extends Enchantment {
 			default -> 100;
 		};
 	}
-	
+
+	private static int getMinLevelUpgradeRate(int level)
+	{
+		// Pourcentage de succes de passer au niveau suivant de l'enchantement
+		return switch (level) {
+			case 0 -> 5;
+			case 1 -> 3;
+			case 2 -> 3;
+			case 3 -> 2;
+			case 4 -> 2;
+			case 5 -> 2;
+			case 6 -> 1;
+			case 7 -> 1;
+			case 8 -> 1;
+			case 9 -> 1;
+			case 10 -> 1;
+			default -> 1;
+		};
+	}
 }
