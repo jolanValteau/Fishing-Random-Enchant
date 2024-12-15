@@ -34,9 +34,11 @@ public class FishingBobberEntityMixin {
 		boolean isGamblingTime = false;
 		for (FishingBobberEntity fishingBobber : world.getEntitiesByClass(FishingBobberEntity.class, player.getBoundingBox().expand(32), bobber -> true)) {
 			boolean caughtFishBool = ((FishingBobberEntityAccessor) fishingBobber).getCaughtFish();
-			if (!caughtFishBool) {continue;}
-			isGamblingTime = true;
-			break;
+			if (caughtFishBool)
+			{
+				isGamblingTime = true;
+				break;
+			}
 		}
 		if (!isGamblingTime) {return;}
 
