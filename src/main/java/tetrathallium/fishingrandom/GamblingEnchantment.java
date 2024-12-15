@@ -12,6 +12,8 @@ import net.minecraft.text.Text;
 import net.minecraft.entity.player.PlayerEntity;
 
 public class GamblingEnchantment extends Enchantment {
+	private static final Random random = new Random();
+
 	public GamblingEnchantment() {
 		super(Enchantment.Rarity.VERY_RARE, EnchantmentTarget.FISHING_ROD, new EquipmentSlot[] {EquipmentSlot.MAINHAND});
 	}
@@ -35,9 +37,8 @@ public class GamblingEnchantment extends Enchantment {
 		return stack.getItem() == Items.FISHING_ROD;
 	}
 
-	public static boolean SuccessGambling(ItemStack rod, PlayerEntity debugPlayer) {
+	public static boolean successGambling(ItemStack rod, PlayerEntity debugPlayer) {
 		boolean isSuccess = false;
-		Random random = new Random();
 
 		int chance = random.nextInt(100);
 		int level = getLevel(rod);
@@ -47,7 +48,7 @@ public class GamblingEnchantment extends Enchantment {
 		isSuccess = chance < minLevelSuccessRate;
 
 		if (debugPlayer != null) {
-			// debugPlayer.sendMessage(Text.literal("Gambling " + level + " - Chance: " + chance + "/100 > " + minLevelSuccessRate + " ? => " + isSuccess), true);
+			debugPlayer.sendMessage(Text.literal("Gambling " + level + " - Chance: " + chance + "/100 > " + minLevelSuccessRate + " ? => " + isSuccess), true);
 		}
 
 		return isSuccess;
