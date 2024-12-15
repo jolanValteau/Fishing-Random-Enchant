@@ -11,12 +11,12 @@ import org.slf4j.LoggerFactory;
 
 public class FishingRandom implements ModInitializer {
 	public static final String MOD_ID = "fishingrandom";
-public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static final Enchantment GAMBLING = new GamblingEnchantment();
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.ENCHANTMENT, new Identifier("fishingrandom", "gambling"), GAMBLING);
+		Registry.register(Registries.ENCHANTMENT, new Identifier(MOD_ID, "gambling"), GAMBLING);
 	
 	}
 }

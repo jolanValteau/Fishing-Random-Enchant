@@ -14,8 +14,7 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import tetrathallium.fishingrandom.GamblingEnchantment;
 import net.minecraft.registry.Registries;
-// import net.minecraft.entity.Entity;
-// import net.minecraft.text.Text;
+import net.minecraft.text.Text;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -35,17 +34,19 @@ public class FishingBobberEntityMixin {
 		boolean isGamblingTime = false;
 		for (FishingBobberEntity fishingBobber : world.getEntitiesByClass(FishingBobberEntity.class, player.getBoundingBox().expand(32), bobber -> true)) {
 			boolean caughtFishBool = ((FishingBobberEntityAccessor) fishingBobber).getCaughtFish();
-			if (!caughtFishBool) {continue;}
-			isGamblingTime = true;
-			break;
+			if (caughtFishBool)
+			{
+				isGamblingTime = true;
+				break;
+			}
 		}
 		if (!isGamblingTime) {return;}
 
 		// Gambling time !
-		if (!GamblingEnchantment.SuccessGambling(rod, player)) {return;}
+		if (!GamblingEnchantment.successGambling(rod, player)) {return;}
 
 		// Success
-		// player.sendMessage(Text.of("You got a random item !"), true); // Todo uncomment
+		player.sendMessage(Text.of("You have fished a random item !"), true);
 		giveRandomItem(player);
 	}
 
