@@ -39,15 +39,27 @@ public class FishingBobberEntityMixin {
 	
 	private static void handleFishingGambling(PlayerEntity player, Hand hand) {
 		ItemStack rod = player.getStackInHand(hand);
+		boolean isGamblerRod = GamblingEnchantment.isGambler(rod); // Unenchanted fishing_rod stop
 
-		GamblingEnchantment.tryUpgradeEnchant(rod);
-		if (!GamblingEnchantment.isGambler(rod)) {return;} // Unenchanted fishing_rod stop
+		boolean levelUped = GamblingEnchantment.tryUpgradeEnchant(rod);
+		if (levelUped)
+		{
+			if (isGamblerRod)
+			{
+				if (GamblingEnchantment.isMaxedLevel(rod)) {player.sendMessage(Text.of("Your gambling dedication is now at his peak !"), true);}
+				else {player.sendMessage(Text.of("Your gambling dedication just went stronger !"), true);}
+			}
+			else
+			{
+				player.sendMessage(Text.of("You just discovered gambling !"), true);
+			}
+		}
 
 		// Gambling time !
-		if (!GamblingEnchantment.successGambling(rod, player)) {return;} // FAIL Gambling
+		if (!GamblingEnchantment.successGambling(rod)) {return;} // FAIL Gambling
 
 		// Success
-		player.sendMessage(Text.of("You have fished a random item !"), true);
+		player.sendMessage(Text.of("You have gambled a random item !"), true); // TO REVIEW
 		successfullyGambled(player);
 	}
 
