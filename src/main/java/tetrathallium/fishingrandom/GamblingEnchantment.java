@@ -1,5 +1,6 @@
 package tetrathallium.fishingrandom;
 
+import java.util.Map;
 import java.util.Random;
 
 import net.minecraft.enchantment.Enchantment;
@@ -14,18 +15,25 @@ import net.minecraft.entity.player.PlayerEntity;
 public class GamblingEnchantment extends Enchantment {
 	private static final Random random = new Random();
 
+	private static final int MIN_LEVEL = 1;
+	private static final int MAX_LEVEL = 10;
+
 	public GamblingEnchantment() {
 		super(Enchantment.Rarity.VERY_RARE, EnchantmentTarget.FISHING_ROD, new EquipmentSlot[] {EquipmentSlot.MAINHAND});
 	}
 
 	@Override
 	public int getMinLevel() {
-		return 1;
+		return MIN_LEVEL;
 	}
 
 	@Override
 	public int getMaxLevel() {
-		return 10;
+		return getStaticMaxLevel();
+	}
+
+	public static int getStaticMaxLevel() {
+		return MAX_LEVEL;
 	}
 
 	public static boolean isGambler(ItemStack stack)
@@ -57,6 +65,26 @@ public class GamblingEnchantment extends Enchantment {
 		}
 
 		return isSuccess;
+	}
+
+	public static boolean tryUpgradeEnchant(ItemStack rod)
+	{
+		boolean isSuccess = false;
+		int chance = random.nextInt(100);
+		int level = getLevel(rod);
+
+		if (level >= getStaticMaxLevel()) {return false;}
+
+		int minLevelSuccessRate = getMinLevelUpgradeRate(level);
+
+		isSuccess = chance < minLevelSuccessRate;
+
+		if (!isSuccess) {return false;}
+
+		Map<Enchantment, Integer> rodEnchants = EnchantmentHelper.get(rod);
+		rodEnchants.put(FishingRandom.GAMBLING, level + 1);
+		EnchantmentHelper.set(rodEnchants, rod);
+		return true;
 	}
 
 	private static int getMinLevelSuccessRate(int level)

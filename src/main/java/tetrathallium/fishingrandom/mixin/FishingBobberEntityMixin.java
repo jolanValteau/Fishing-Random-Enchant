@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.Item;
 
-import java.rmi.UnexpectedException;
 import java.util.List;
 
 import net.minecraft.util.Hand;
@@ -40,20 +39,21 @@ public class FishingBobberEntityMixin {
 	
 	private static void handleFishingGambling(PlayerEntity player, Hand hand) {
 		ItemStack rod = player.getStackInHand(hand);
-		if (!GamblingEnchantment.isGambler(rod)) {return;} // Unenchanted fishing_rod // TODO MOVE
+
+		GamblingEnchantment.tryUpgradeEnchant(rod);
+		if (!GamblingEnchantment.isGambler(rod)) {return;} // Unenchanted fishing_rod stop
 
 		// Gambling time !
 		if (!GamblingEnchantment.successGambling(rod, player)) {return;} // FAIL Gambling
 
 		// Success
 		player.sendMessage(Text.of("You have fished a random item !"), true);
-		successfullyGambled((FishingRodItem) rod.getItem(), player);
+		successfullyGambled(player);
 	}
 
-	private static void successfullyGambled(FishingRodItem rod, PlayerEntity player)
+	private static void successfullyGambled(PlayerEntity player)
 	{
 		giveRandomitem(player);
-		upgradeEnchant(rod);
 	}
 
 	private static void giveRandomitem(PlayerEntity player)
@@ -63,10 +63,5 @@ public class FishingBobberEntityMixin {
 		{return;}
 
 		player.giveItemStack(new ItemStack(allItems.get(random.nextInt(allItems.size()))));
-	}
-
-	private static void upgradeEnchant(FishingRodItem rod)
-	{
-		// TODO
 	}
 }
