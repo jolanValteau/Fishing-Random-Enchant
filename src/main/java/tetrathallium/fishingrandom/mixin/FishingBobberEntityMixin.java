@@ -3,6 +3,8 @@ package tetrathallium.fishingrandom.mixin;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
+import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.Item;
 
@@ -14,6 +16,7 @@ import java.util.Random;
 import net.minecraft.world.World;
 import tetrathallium.fishingrandom.GamblingEnchantment;
 import net.minecraft.registry.Registries;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -44,14 +47,34 @@ public class FishingBobberEntityMixin {
 		boolean levelUped = GamblingEnchantment.tryUpgradeEnchant(rod);
 		if (levelUped)
 		{
+			Text displayTitle;
+			Text displaySubtile;
 			if (isGamblerRod)
 			{
-				if (GamblingEnchantment.isMaxedLevel(rod)) {player.sendMessage(Text.of("Your gambling dedication is now at his peak !"), true);}
-				else {player.sendMessage(Text.of("Your gambling dedication just went stronger !"), true);}
+				if (GamblingEnchantment.isMaxedLevel(rod))
+				{
+					displayTitle = Text.of("Gambling is now");
+					displaySubtile = Text.of("at his peak !");
+				}
+				else
+				{
+					displayTitle = Text.of("Gambling dedication");
+					displaySubtile = Text.of("upgraded !");
+
+				}
 			}
 			else
 			{
-				player.sendMessage(Text.of("You just discovered gambling !"), true);
+				displayTitle = Text.of("You just discovered");
+				displaySubtile = Text.of("Gambling !");
+			}
+
+			if (player instanceof ServerPlayerEntity serverPlayer)
+			{
+				// Envoi du titre principal
+				serverPlayer.networkHandler.sendPacket(new TitleS2CPacket(displayTitle));
+				// Envoi du sous-titre
+				serverPlayer.networkHandler.sendPacket(new SubtitleS2CPacket(displaySubtile));
 			}
 		}
 
@@ -59,7 +82,7 @@ public class FishingBobberEntityMixin {
 		if (!GamblingEnchantment.successGambling(rod)) {return;} // FAIL Gambling
 
 		// Success
-		player.sendMessage(Text.of("You have gambled a random item !"), true); // TO REVIEW
+		player.sendMessage(Text.of("You have gambled a random item !"), true);
 		successfullyGambled(player);
 	}
 
