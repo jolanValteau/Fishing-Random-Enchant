@@ -1,0 +1,33 @@
+{
+  "display":
+  {
+    "icon":
+    {
+      "item": "minecraft:fishing_rod"
+    },
+    "title": {
+      "translate": "advancements.use_gambling_enchant_achievement.title"
+    },
+    "description": {
+      "translate": "advancements.use_gambling_enchant_achievement.description"
+    },
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "rewards":
+  {
+    "experience": 1000
+  },
+  "criteria":
+  {
+    "use_gambling_enchant_achievement":
+    {
+      "trigger": "minecraft:impossible",
+      "conditions":
+      {}
+    }
+  }
+}

@@ -1,6 +1,7 @@
 package tetrathallium.fishingrandom.mixin;
 
 import net.minecraft.entity.projectile.FishingBobberEntity;
+import net.minecraft.advancement.Advancement;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
@@ -11,11 +12,13 @@ import net.minecraft.item.Item;
 import java.util.List;
 
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
 import java.util.Random;
 import net.minecraft.world.World;
 import tetrathallium.fishingrandom.GamblingEnchantment;
 import net.minecraft.registry.Registries;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
@@ -81,6 +84,7 @@ public class FishingBobberEntityMixin {
 		// Gambling time !
 		if (!GamblingEnchantment.successGambling(rod)) {return;} // FAIL Gambling
 
+		grantAdvancement(player, "use_gambling_enchant_achievement");
 		// Success
 		player.sendMessage(Text.of("You have gambled a random item !"), true);
 		successfullyGambled(player);
@@ -98,5 +102,23 @@ public class FishingBobberEntityMixin {
 		{return;}
 
 		player.giveItemStack(new ItemStack(allItems.get(random.nextInt(allItems.size()))));
+	}
+
+	// Méthode pour accorder un achievement
+	private static void grantAdvancement(PlayerEntity player, String advancementName)
+	{
+		player.sendMessage(Text.of("begin grant new achievement !"), false);
+		MinecraftServer server = player.getServer();
+		if (server != null) {
+			// Identifier pour l'advancement
+			Identifier advancementId = new Identifier("fishingrandom", advancementName);
+			Advancement advancement = server.getAdvancementLoader().get(advancementId);
+
+			if (advancement != null && player instanceof ServerPlayerEntity serverPlayer)
+			{
+				serverPlayer.getAdvancementTracker().grantCriterion(advancement, "use_gambling_enchant_achievement");
+				player.sendMessage(Text.of("You have unlocked a new achievement !"), false);
+			}	
+   		}
 	}
 }

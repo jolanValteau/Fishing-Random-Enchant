@@ -1,3 +1,5 @@
 {
-	"enchantment.fishingrandom.gambling": "Gambling"
+	"enchantment.fishingrandom.gambling": "Gambling",
+	"advancements.use_gambling_enchant_achievement.title" : "Gamble with a rod",
+	"advancements.use_gambling_enchant_achievement.description" : "Use a fishing rod with the Gambling enchantment"
 }
