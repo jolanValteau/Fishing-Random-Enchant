@@ -116,7 +116,7 @@ public class FishingBobberEntityMixin {
 
 			if (advancement != null && player instanceof ServerPlayerEntity serverPlayer)
 			{
-				serverPlayer.getAdvancementTracker().grantCriterion(advancement, "trigger");
+				serverPlayer.getAdvancementTracker().grantCriterion(advancement, "use_gambling_enchant_achievement");
 				player.sendMessage(Text.of("You have unlocked a new achievement !"), false);
 			}	
    		}
