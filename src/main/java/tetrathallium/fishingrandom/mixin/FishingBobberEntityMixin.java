@@ -30,7 +30,7 @@ public class FishingBobberEntityMixin {
 	
 	@Inject(method = "use", at = @At("HEAD"))
 	private void onUse(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> ci) {
-		if (isPullingFish(world, user)) {handleFishingGambling(user, hand);}
+		if (!world.isClient && isPullingFish(world, user)) {handleFishingGambling(user, hand);}
 	}
 
 	private static boolean isPullingFish(World world, PlayerEntity player) {
